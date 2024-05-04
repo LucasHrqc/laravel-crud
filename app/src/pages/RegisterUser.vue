@@ -10,8 +10,10 @@
         </q-card-section>
         <q-separator inset />
 
-        <q-card-section>
-          <div class="grid grid-cols-12 gap-x-6 gap-y-8 px-4 py-6">
+        <q-card-section class="">
+          <div
+            class="grid grid-cols-12 gap-x-6 gap-y-8 px-8 py-10 border border-gray-400 rounded-md bg-[#18202C]"
+          >
             <q-input
               dark
               v-model="form.name"
@@ -95,6 +97,7 @@ const save = async () => {
 
   await usersStore.post(form.value);
   resetForm();
+  router.push("/");
 };
 
 const validForm = () => {

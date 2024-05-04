@@ -36,7 +36,16 @@
       />
     </template> -->
     <template #body-cell-actions="scope">
-      <q-icon name="delete" color="negative" padding="5px" size="20px"></q-icon>
+      <q-td :props="scope">
+        <q-icon
+          name="delete"
+          color="negative"
+          padding="5px"
+          size="20px"
+          class="cursor-pointer"
+          @click="emit('delete', scope.row.id)"
+        ></q-icon>
+      </q-td>
     </template>
     <template #no-data> Nenhum dado disponível </template>
     <template #loading>
@@ -78,9 +87,8 @@ const props = defineProps({
 });
 
 const { title, rows, columns, pagination, loading } = toRefs(props);
-const selected = ref([]);
 
-const emit = defineEmits(["update-pagination"]);
+const emit = defineEmits(["update-pagination", "delete"]);
 
 const paginationLabel = (start, end, total) => {
   return `${start} - ${end}. ${total}`;

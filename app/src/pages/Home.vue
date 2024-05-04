@@ -20,6 +20,7 @@
             :columns="columns"
             :pagination="table.pagination"
             :loading="loading.table"
+            @delete="handleDeleteUser"
             @update-pagination="(val) => updateRowsPerPage(val)"
           />
         </q-card-section>
@@ -42,6 +43,11 @@ const updateRowsPerPage = async (val = false) => {
   if (val) usersStore.table.pagination.rowsPerPage = val;
   usersStore.table.currentPage = 1;
   await usersStore.get();
+};
+
+const handleDeleteUser = async (id) => {
+  await usersStore.delete(id);
+  await updateRowsPerPage();
 };
 
 const columns = [

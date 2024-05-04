@@ -7,6 +7,7 @@ export const useUsersStore = defineStore("counter", {
     url_default: "/api/user",
     url_get: "/api/user",
     url_post: "/api/user",
+    url_delete: "/api/user",
     data: [],
     count: {},
     table: {
@@ -136,15 +137,26 @@ export const useUsersStore = defineStore("counter", {
         this.loading.request = false;
       }
     },
+    async delete(id) {
+      try {
+        const response = await api.delete(`${this.url_delete}/${id}`);
+
+        return { success: true, data: response.data };
+      } catch (error) {
+        // Handle error
+        errorHandler(error);
+        return {
+          success: false,
+          error,
+        };
+      }
+    },
   },
 });
 
 function errorHandler(error) {
   const status = error.response.status;
   const response = error.response;
-
-  console.log(status);
-  console.log(response);
 
   switch (status) {
     case 402:
