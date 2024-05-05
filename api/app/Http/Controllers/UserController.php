@@ -35,6 +35,19 @@ class UserController extends Controller
         return $user;
     }
 
+    public function update(Request $request, $id)
+    {
+        $newUser = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'role' => 'required|string|max:255',
+        ]);
+
+        $user = User::where('id', $id)->first();
+        $user->update($newUser);
+        return $user;
+    }
+
     public function delete($id)
     {
         $user = User::findOrFail($id);
