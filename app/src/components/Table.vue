@@ -2,11 +2,7 @@
   <q-table
     style="height: 500px"
     flat
-    dark
     bordered
-    card-class="!bg-[#18202C] text-white"
-    table-class="text-white"
-    table-header-class="text-white"
     :title="title"
     :rows="rows"
     :columns="columns"
@@ -36,15 +32,23 @@
       />
     </template> -->
     <template #body-cell-actions="scope">
-      <q-td :props="scope">
-        <q-icon
-          name="delete"
+      <q-td :props="scope" class="flex flex-row items-center gap-2">
+        <q-btn
+          icon="edit"
+          color="blue"
+          padding="5px"
+          size="10px"
+          class="cursor-pointer"
+          @click="emit('update', scope.row.id)"
+        />
+        <q-btn
+          icon="delete"
           color="negative"
           padding="5px"
-          size="20px"
+          size="10px"
           class="cursor-pointer"
           @click="emit('delete', scope.row.id)"
-        ></q-icon>
+        />
       </q-td>
     </template>
     <template #no-data> Nenhum dado disponível </template>

@@ -8,6 +8,7 @@ export const useUsersStore = defineStore("counter", {
     url_get: "/api/user",
     url_post: "/api/user",
     url_delete: "/api/user",
+    url_put: "/api/user",
     data: [],
     count: {},
     table: {
@@ -149,6 +150,25 @@ export const useUsersStore = defineStore("counter", {
           success: false,
           error,
         };
+      }
+    },
+    async put(id, payload) {
+      try {
+        this.loading.table = true;
+        this.loading.request = true;
+        const response = await api.put(`${this.url_put}/${id}`, payload);
+
+        return { success: true, data: response.data };
+      } catch (error) {
+        // Handle error
+        errorHandler(error);
+        return {
+          success: false,
+          error,
+        };
+      } finally {
+        this.loading.table = false;
+        this.loading.request = false;
       }
     },
   },

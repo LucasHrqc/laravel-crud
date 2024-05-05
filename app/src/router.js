@@ -13,6 +13,10 @@ const routes = [
     path: "/register/user",
     component: RegisterUser,
   },
+  {
+    path: "/edit/user/:id",
+    component: RegisterUser,
+  },
 ];
 
 const router = createRouter({

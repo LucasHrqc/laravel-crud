@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-7xl mx-auto w-full min-h-screen py-32">
     <div class="flex flex-col flex-wrap flex-grow min-h-[100%] my-auto w-full">
-      <q-card class="min-h-fit !bg-[#10151D] text-white">
+      <q-card class="min-h-fit">
         <q-card-section>
           <div class="flex flex-row flex-wrap items-center justify-between">
             <span class="mx-4 text-3xl">Usuários</span>
@@ -21,6 +21,7 @@
             :pagination="table.pagination"
             :loading="loading.table"
             @delete="handleDeleteUser"
+            @update="handleUpdateUser"
             @update-pagination="(val) => updateRowsPerPage(val)"
           />
         </q-card-section>
@@ -48,6 +49,10 @@ const updateRowsPerPage = async (val = false) => {
 const handleDeleteUser = async (id) => {
   await usersStore.delete(id);
   await updateRowsPerPage();
+};
+
+const handleUpdateUser = async (id) => {
+  router.push(`/edit/user/${id}`);
 };
 
 const columns = [

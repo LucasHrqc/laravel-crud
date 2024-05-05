@@ -1,7 +1,8 @@
 <template>
-  <div class="max-w-7xl mx-auto w-full min-h-screen py-32">
+  <RegisterSkeleton v-if="loadingUsers.page || loadingUsers.request"></RegisterSkeleton>
+  <div v-else class="max-w-7xl mx-auto w-full min-h-screen py-32">
     <div class="flex flex-col flex-wrap flex-grow min-h-[100%] my-auto w-full">
-      <q-card class="min-h-fit !bg-[#10151D] text-white">
+      <q-card class="min-h-fit">
         <q-card-section>
           <div class="flex flex-row flex-wrap items-center justify-between">
             <span class="mx-4 text-3xl">Cadastrar usuário</span>
@@ -10,12 +11,9 @@
         </q-card-section>
         <q-separator inset />
 
-        <q-card-section class="">
-          <div
-            class="grid grid-cols-12 gap-x-6 gap-y-8 px-8 py-10 border border-gray-400 rounded-md bg-[#18202C]"
-          >
+        <q-card-section>
+          <div class="grid grid-cols-12 gap-x-6 gap-y-8 px-8 py-8">
             <q-input
-              dark
               v-model="form.name"
               class="col-span-6"
               dense
@@ -28,7 +26,6 @@
               <template #label> Nome<span class="require">*</span> </template>
             </q-input>
             <q-input
-              dark
               v-model="form.role"
               class="col-span-6"
               dense
@@ -40,7 +37,6 @@
               <template #label> Profissão<span class="require">*</span> </template>
             </q-input>
             <q-input
-              dark
               v-model="form.email"
               class="col-span-6"
               dense
@@ -69,15 +65,16 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useUsersStore } from "../stores/users";
-import { useRouter } from "vue-router";
+import RegisterSkeleton from "../skeletons/RegisterSkeleton.vue";
+import { useRoute, useRouter } from "vue-router";
 import { Notify } from "quasar";
+import { storeToRefs } from "pinia";
 
 const router = useRouter();
+const route = useRoute();
 const usersStore = useUsersStore();
-
-onMounted(async () => {
-  await usersStore.get();
-});
+const { loading: loadingUsers } = storeToRefs(usersStore);
+const isEditingId = ref(route.params?.id ?? false);
 
 const form = ref({
   name: "",
@@ -85,7 +82,15 @@ const form = ref({
   email: "",
 });
 
+onMounted(async () => {
+  if (isEditingId.value) {
+    const response = await usersStore.get(isEditingId.value);
+    form.value = response.data?.[0];
+  }
+});
+
 const save = async () => {
+  const payload = form.value;
   if (!validForm()) {
     Notify.create({
       position: "top",
@@ -95,7 +100,12 @@ const save = async () => {
     return;
   }
 
-  await usersStore.post(form.value);
+  if (isEditingId.value) {
+    await usersStore.put(payload.id, payload);
+  } else {
+    await usersStore.post(payload);
+  }
+
   resetForm();
   router.push("/");
 };
